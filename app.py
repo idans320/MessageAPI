@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify
 from datetime import datetime
 
 app = Flask(__name__)
-app.json_encoder = CustomJSONEncoder
 
 Messages = {}
 
@@ -41,6 +40,7 @@ class CustomJSONEncoder(JSONEncoder):
             return obj.isoformat()
         return JSONEncoder.default(self, obj)
 
+app.json_encoder = CustomJSONEncoder
 
 def _send_message(sender, receiver, message, subject):
     message = Message(sender, receiver, message, subject)
