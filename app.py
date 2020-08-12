@@ -33,6 +33,7 @@ class Message:
 
 
 class CustomJSONEncoder(JSONEncoder):
+    #An encoder for Message object
     def default(self, obj):
         if isinstance(obj,Message):
             return obj.__dict__
@@ -43,6 +44,7 @@ class CustomJSONEncoder(JSONEncoder):
 app.json_encoder = CustomJSONEncoder
 
 def _send_message(sender, receiver, message, subject):
+    #create a new message instance
     message = Message(sender, receiver, message, subject)
     Messages[receiver].append(message) if receiver in Messages.keys(
     ) else Messages.update({receiver: [message]})
@@ -51,8 +53,9 @@ def _send_message(sender, receiver, message, subject):
 
 def _read_message(receiver,msgid):
     if receiver in Messages.keys():
-        if msgid == None:
+        if msgid == None: #if id not specified read the earliest unread message
             try:
+                #finding the earliest unread message
                 msg = next(
                     filter(lambda msg: msg.unread == True and msg.deleted == False, Messages[receiver]))
                 msg.unread = False
@@ -71,6 +74,7 @@ def _read_message(receiver,msgid):
 
 
 def _read_all_messages(receiver, msgs=[]):
+    #recursive reading and marked as read for all unread messages
     if receiver in Messages.keys():
         msg = _read_message(receiver,None)
         if msg == {}:
@@ -85,11 +89,13 @@ def _read_all_messages(receiver, msgs=[]):
 
 def _get_all_messages(receiver):
     if receiver in Messages.keys():
+        #getting all message  by specific user
         return [msg for msg in filter(lambda msg : msg.deleted == False, Messages[receiver])]
     else:
         return []
 def _delete_message(user,msgid):
     try:
+        # iterating over all existing messages and find the specific id if it's either sent by username or received by username
         allmsgs = flatten([msg for msg in Messages.values()])
         msg = next(filter(lambda msg: (msg.receiver == user or msg.sender == user ) and msg.id == msgid and msg.deleted == False, allmsgs))
         msg.deleted = True
