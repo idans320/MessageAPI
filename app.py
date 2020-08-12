@@ -4,7 +4,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-Messages = {}
+Messages = {} #a dictionary containing all messages sent to an user. I would have probably have used SQLite for persistent data, but it's good for the demo. 
 
 
 class GeneratorID:
