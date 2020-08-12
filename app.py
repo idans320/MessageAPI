@@ -1,7 +1,9 @@
 from flask.json import JSONEncoder
 from flask import Flask, request, jsonify
 from datetime import datetime
+
 app = Flask(__name__)
+app.json_encoder = CustomJSONEncoder
 
 Messages = {}
 
@@ -146,9 +148,3 @@ def delete_messages():
     except Exception as e:
         print(e)
         return {"Error": "Invalid Request"}
-
-
-
-if __name__ == '__main__':
-    app.json_encoder = CustomJSONEncoder
-    app.run()
